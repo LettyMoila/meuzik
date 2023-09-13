@@ -1,6 +1,6 @@
 import { Image, TouchableOpacity,
   Pressable, StyleSheet,
-  Text, View,} from "react-native";
+  Text, View, ScrollView,} from "react-native";
 import { Audio } from "expo-av";
 import React from "react";
 
@@ -67,22 +67,24 @@ export default function History() {
       </View>
       <View style={styles.middle}>
         <Text style={styles.playlist}>Playlist</Text>
-        {recordings.map((recLine, index) => {
-          return (
-            <View key={index} style={ styles.row }>
-              <Text style={styles.fill}>
-                Recording #{index + 1} 
-              </Text>
-              <TouchableOpacity
-                style={ styles.butt }
-                onPress={() => recLine.sound.replayAsync()}
-              > <Image style={styles.icon} source={{uri: play}}/></TouchableOpacity>
-              <TouchableOpacity style={ styles.butt } onPress={() => deletion(recording.index)}>
-                <Image style={styles.icon} source={{uri: del}}/>
-              </TouchableOpacity>
-            </View>
-          );
-        })}
+        <ScrollView style={styles.scroller}>
+          {recordings.map((recLine, index) => {
+            return (
+              <View key={index} style={ styles.row }>
+                <Text style={styles.fill}>
+                  Recording #{index + 1} 
+                </Text>
+                <TouchableOpacity
+                  style={ styles.butt }
+                  onPress={() => recLine.sound.replayAsync()}
+                > <Image style={styles.icon} source={{uri: play}}/></TouchableOpacity>
+                <TouchableOpacity style={ styles.butt } onPress={() => deletion(recording.index)}>
+                  <Image style={styles.icon} source={{uri: del}}/>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </ScrollView>
       </View>
       <View style={styles.bottom}>
         <Text style={styles.text}>Record</Text>
@@ -128,6 +130,9 @@ const styles = StyleSheet.create({
   },
   playlist: {
     fontWeight: "bold",
+  },
+  scroller:{
+    borderColor: '#000000'
   },
   row: {
     flexDirection: 'row',
