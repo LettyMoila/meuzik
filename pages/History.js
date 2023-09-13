@@ -55,9 +55,9 @@ export default function History() {
     const seconds = Math.round((minutes - Math.floor(minutes)) * 60);
     return seconds < 10 ? `${Math.floor(minutes)}:0${seconds}` : `${Math.floor(minutes)}:${seconds}`
   }
-  const del = (index) => {
+  const deletion = (index) => {
     const deleteRec = recordings.filter(recording => recording.index !== index);
-    setTasks(deleteRec);
+    setRecs(deleteRec);
   }
 
   return (
@@ -71,13 +71,13 @@ export default function History() {
           return (
             <View key={index} style={ styles.row }>
               <Text style={styles.fill}>
-                Recording #{index + 1} | {recLine.duration}
+                Recording #{index + 1} 
               </Text>
               <TouchableOpacity
                 style={ styles.butt }
                 onPress={() => recLine.sound.replayAsync()}
               > <Image style={styles.icon} source={{uri: play}}/></TouchableOpacity>
-              <TouchableOpacity style={ styles.butt } onPress={() => del(recording.index)}>
+              <TouchableOpacity style={ styles.butt } onPress={() => deletion(recording.index)}>
                 <Image style={styles.icon} source={{uri: del}}/>
               </TouchableOpacity>
             </View>
@@ -134,7 +134,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 10,
-    marginRight: 40
+    marginRight: 40,
+    gap: 10
   },
   fill: {
     flex: 1,
