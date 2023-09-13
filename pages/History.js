@@ -3,6 +3,7 @@ import { Image, TouchableOpacity,
   Text, View,} from "react-native";
 import { Audio } from "expo-av";
 import React from "react";
+
 import mic from "../assets/microphone.png";
 import play from "../assets/play.png";
 import del from "../assets/delete.png";
@@ -43,31 +44,22 @@ export default function History() {
     const { sound, status } = await recording.createNewLoadedSoundAsync();
     updatedRecs.push({
       sound: sound,
-      duration: getDuration(status.durationMillis),
+      duration: getDurationFormatted(status.durationMillis),
       file: recording.getURI(),
     });
-
+    
     setRecs(updatedRecs);
   }
-
-  function getDuration(millis) {
+  function getDurationFormatted(millis) {
     const minutes = millis / 1000 / 60;
-    const minutesDisplay = Math.floor(minutes);
-    const seconds = Math.round((minutes - minutesDisplay) * 60);
-    const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds;
-    return `${minutesDisplay}:${secondsDisplay}`;
+    const seconds = Math.round((minutes - Math.floor(minutes)) * 60);
+    return seconds < 10 ? `${Math.floor(minutes)}:0${seconds}` : `${Math.floor(minutes)}:${seconds}`
   }
-  /*function recordingLines() {
-        return recordings.map((recLine, index)=>{
-            return(
-                <View key={index} style={styles.row}>
-                    <Text style={styles.fill}> Recording {index + 1} - {recLine.duration}</Text>
-                    <Button style={styles.button} onPress={()=>recLine.sound.replayAsync()} ></Button>
-                    <Button style={styles.button} onPress={()=>recLine.sound.replayAsync()} ></Button>
-                </View>
-            )
-        })
-    }*/
+  const del = (index) => {
+    const deleteRec = recordings.filter(recording => recording.index !== index);
+    setTasks(deleteRec);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.top}>
@@ -78,14 +70,14 @@ export default function History() {
         {recordings.map((recLine, index) => {
           return (
             <View key={index} style={ styles.row }>
-              <Text>
-                Recording {index + 1} - {recLine.duration}
+              <Text style={styles.fill}>
+                Recording #{index + 1} | {recLine.duration}
               </Text>
               <TouchableOpacity
                 style={ styles.butt }
                 onPress={() => recLine.sound.replayAsync()}
               > <Image style={styles.icon} source={{uri: play}}/></TouchableOpacity>
-              <TouchableOpacity style={ styles.butt } onPress={() => recLine.sound.replayAsync()}>
+              <TouchableOpacity style={ styles.butt } onPress={() => del(recording.index)}>
                 <Image style={styles.icon} source={{uri: del}}/>
               </TouchableOpacity>
             </View>
@@ -138,10 +130,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   row: {
-    flex: 1,
-    margin: 16,
     flexDirection: 'row',
-    gap: 10
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+    marginRight: 40
+  },
+  fill: {
+    flex: 1,
+    margin: 15
   },
   butt: {
     width: 20,
